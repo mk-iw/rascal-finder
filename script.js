@@ -8,24 +8,19 @@ const ctx = canvas.getContext('2d');
 const MODEL_URL = "./model/";
 
 async function init() {
-    info.innerText = "モデル読み込み中...";
-    
-    // モデルのロード
-    model = await tmImage.load(
-        MODEL_URL + "model.json",
-        MODEL_URL + "metadata.json"
-    );
-    maxPredictions = model.getTotalClasses();
+    console.log("1: 開始");
+    model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
+    console.log("2: モデル読み込み完了");
 
-    // カメラの設定
-    const constraints = {
-        video: { facingMode: "environment" } // 背面カメラ
-    };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
     video.srcObject = stream;
-    
-    info.innerText = "スキャン中...";
-    requestAnimationFrame(loop);
+    console.log("3: カメラ準備完了");
+
+    video.onloadedmetadata = () => {
+        video.play();
+        console.log("4: 再生開始");
+        requestAnimationFrame(loop);
+    };
 }
 
 async function loop() {
